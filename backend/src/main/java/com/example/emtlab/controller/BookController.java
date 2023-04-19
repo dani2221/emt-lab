@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -28,6 +29,16 @@ public class BookController {
         return this.bookService.FindAllWithPagination(pageable);
     }
 
+    @GetMapping("{id}")
+    public Book find(@PathVariable Long id) {
+        return this.bookService.FindBookById(id);
+    }
+
+    @GetMapping("/categories")
+    public List<Category> findCat() {
+        return Arrays.stream(Category.values()).toList();
+    }
+
     @PutMapping("/edit/{id}")
     public ResponseEntity<Book> editById(@PathVariable Long id,
                                          @RequestBody BookDto bookDto) {
@@ -37,6 +48,11 @@ public class BookController {
     @PostMapping("/add")
     public void save(@RequestBody BookDto bookDto) {
         this.bookService.AddBook(bookDto);
+    }
+
+    @PutMapping("/borrow/{id}")
+    public ResponseEntity<Book> borrow(@PathVariable Long id) {
+        return  ResponseEntity.ok().body(this.bookService.BorrowBook(id));
     }
 
     @DeleteMapping("/delete/{id}")

@@ -12,6 +12,7 @@ public class Author {
     private String name;
     private String surname;
     @ManyToOne()
+    @JoinColumn(name = "country_id")
     private Country country;
 
     public Author() {

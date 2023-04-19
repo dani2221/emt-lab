@@ -7,18 +7,20 @@ import lombok.Data;
 @Entity
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private Integer availableCopies;
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private Author author;
 
     public Book() {
     }
 
-    public Book(String name, Category category, Integer availableCopies, Author author) {
+    public Book(Long id, String name, Category category, Integer availableCopies, Author author) {
+        this.id = id;
         this.name = name;
         this.category = category;
         this.availableCopies = availableCopies;

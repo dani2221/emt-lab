@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 public interface BookService {
     void AddBook(BookDto bookDto);
     Page<Book> FindAllWithPagination(Pageable pageable);
+    Book FindBookById(Long id);
     Book EditBook(Long bookId, BookDto bookDto);
     void DeleteBook(Long bookId);
+    Book BorrowBook(Long bookId);
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -29,13 +30,19 @@ public class BookServiceImpl implements BookService {
         if(!a.isPresent()){
             throw new RuntimeException("author not found");
         }
-        Book book = new Book(bookDto.getName(), bookDto.getCategory(), bookDto.getAvailableCopies(), a.get());
+        Random rand = new Random();
+        Book book = new Book((long) rand.nextInt(10,100), bookDto.getName(), bookDto.getCategory(), bookDto.getAvailableCopies(), a.get());
         bookRepository.save(book);
     }
 
     @Override
     public Page<Book> FindAllWithPagination(Pageable pageable) {
         return bookRepository.findAll(pageable);
+    }
+
+    @Override
+    public Book FindBookById(Long id) {
+        return bookRepository.findById(id).get();
     }
 
     @Override
@@ -53,11 +60,27 @@ public class BookServiceImpl implements BookService {
             throw new RuntimeException("author not found");
         }
         book.setAuthor(a.get());
+        bookRepository.save(book);
         return book;
     }
 
     @Override
     public void DeleteBook(Long bookId) {
         bookRepository.deleteById(bookId);
+    }
+
+    @Override
+    public Book BorrowBook(Long bookId) {
+        Optional<Book> b = bookRepository.findById(bookId);
+        if(!b.isPresent()){
+            throw new RuntimeException("book not found");
+        }
+        Book book = b.get();
+        if(book.getAvailableCopies()<=0){
+            throw new RuntimeException("not enough books");
+        }
+        book.setAvailableCopies(book.getAvailableCopies()-1);
+        bookRepository.save(book);
+        return book;
     }
 }
